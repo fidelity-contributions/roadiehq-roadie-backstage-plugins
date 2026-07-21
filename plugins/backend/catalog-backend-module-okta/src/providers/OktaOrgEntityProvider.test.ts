@@ -72,6 +72,7 @@ jest.mock('@okta/okta-sdk-nodejs', () => {
         },
       };
     }),
+    GroupProfile: {},
   };
 });
 
