@@ -19,7 +19,7 @@ import {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 import { AccountConfig } from '../types';
-import { Client } from '@okta/okta-sdk-nodejs';
+import { Client, GroupProfile } from '@okta/okta-sdk-nodejs';
 import { OktaGroup, OktaUser } from './types';
 
 import {
@@ -27,6 +27,8 @@ import {
   ANNOTATION_ORIGIN_LOCATION,
 } from '@backstage/catalog-model';
 import { LoggerService } from '@backstage/backend-plugin-api';
+
+(GroupProfile as unknown as { isExtensible?: boolean }).isExtensible = true;
 
 export type OktaScope = 'okta.groups.read' | 'okta.users.read';
 

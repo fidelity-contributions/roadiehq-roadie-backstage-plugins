@@ -44,6 +44,7 @@ class ConcreteEntityProvider extends OktaEntityProvider {
 jest.mock('@okta/okta-sdk-nodejs', () => {
   return {
     Client: jest.fn().mockImplementation(() => {}),
+    GroupProfile: {},
   };
 });
 
