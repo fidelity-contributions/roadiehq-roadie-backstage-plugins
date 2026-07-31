@@ -125,6 +125,50 @@ const overviewContent = (
 );
 ```
 
+## New Frontend System
+
+This plugin also ships an `/alpha` entry point for the [new frontend system](https://backstage.io/docs/frontend-system/). Steps 1 to 3 above (dependency, proxy config, CSP) are identical; only step 4 differs — instead of editing `EntityPage.tsx`, the extensions are discovered automatically and configured through `app-config.yaml`.
+
+If your app does not use package discovery, install the plugin explicitly:
+
+```tsx
+// packages/app/src/App.tsx
+import jiraPlugin from '@roadiehq/backstage-plugin-jira/alpha';
+
+const app = createApp({
+  features: [jiraPlugin],
+});
+```
+
+### Extensions
+
+| Extension ID                       | Default  | Description                                                      |
+| ---------------------------------- | -------- | ---------------------------------------------------------------- |
+| `entity-card:jira/overview`        | enabled  | Project details, issues and activity stream                      |
+| `entity-card:jira/activity-stream` | enabled  | Activity stream only                                             |
+| `entity-card:jira/query`           | enabled  | Results of the JQL query in the `jira/all-issues-jql` annotation |
+| `entity-content:jira`              | disabled | A ready-made `/jira` tab, combining the overview and query cards |
+| `api:jira`                         | enabled  | The Jira client                                                  |
+
+Cards are only rendered on entities carrying the annotations they need — `jira/project-key` for the overview and activity stream cards, `jira/all-issues-jql` for the query card — so no `EntitySwitch` is required.
+
+The `/jira` tab is shipped disabled so that installing the plugin never adds a tab you did not ask for. Enable it, and disable any card you do not want, under `app.extensions`:
+
+```yaml
+# app-config.yaml
+app:
+  extensions:
+    # Add the /jira tab
+    - entity-content:jira: true
+    # The tab already renders these two, so drop them from the entity page
+    - entity-card:jira/overview: false
+    - entity-card:jira/query: false
+```
+
+### Not yet supported
+
+`HomePageMyJiraTicketsCard` has no new frontend system equivalent yet: it needs `HomePageWidgetBlueprint`, which requires Backstage 1.48 or above, while this repository is on 1.44. Use the old frontend system export for the home page card in the meantime.
+
 ## How to get the Confluence Activity Filter key
 
 To filter the Confluence activities your instance needs to have the filter to select one or more types of activity from Confluence. You can check that out by executing the following command in your bash:
